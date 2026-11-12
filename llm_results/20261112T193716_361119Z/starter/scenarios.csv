@@ -1,0 +1,7 @@
+split,id,description,pedestrian_in_path,obstacle_in_path,car_from_left,car_from_right,opposite_car,stop_required,permission_known,movement_permitted,sensor_data_available,sensor_conflict,maneuver,expected
+development,D1,"At a green light, the vehicle plans to turn right, but a pedestrian is crossing its intended path.",True,False,False,False,False,False,True,True,True,False,turn_right,STOP
+development,D3,"The light is green for straight travel, but a parked truck blocks required cross-traffic sensor coverage. No hazard is confirmed.",False,False,False,False,False,False,True,True,False,False,go_straight,REQUEST_INFO
+development,D5,"The vehicle plans to cross on green. All required observations are available and consistent, with no pedestrian, obstruction, or crossing vehicle.",False,False,False,False,False,False,True,True,True,False,go_straight,PROCEED
+test,D2,The vehicle plans to cross an intersection. The light is red and the road ahead is empty.,False,False,False,False,False,False,True,False,True,False,go_straight,STOP
+test,D4,"Before a right turn permitted by the signal, two clearance sensors disagree. Neither identifies a specific pedestrian or vehicle.",False,False,False,False,False,False,True,True,True,True,turn_right,REQUEST_INFO
+test,D6,"A green signal permits a right turn. The crosswalk and conflicting approach are clear, with complete and consistent sensor coverage.",False,False,False,False,False,False,True,True,True,False,turn_right,PROCEED

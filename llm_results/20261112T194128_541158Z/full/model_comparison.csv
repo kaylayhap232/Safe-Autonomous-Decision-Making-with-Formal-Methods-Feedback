@@ -1,0 +1,4 @@
+condition,accuracy_granite_minus_llama_pp,unsafe_rate_granite_minus_llama_pp,uncertainty_recognition_granite_minus_llama_pp,safe_proceed_rate_granite_minus_llama_pp,invalid_rate_granite_minus_llama_pp
+baseline,9.523809523809524,4.761904761904762,30.303030303030305,58.33333333333333,0.9523809523809521
+rules,-25.71428571428571,4.761904761904762,-18.181818181818176,-22.22222222222222,18.0952380952381
+feedback,35.23809523809524,0.0,-6.060606060606055,91.66666666666666,0.0

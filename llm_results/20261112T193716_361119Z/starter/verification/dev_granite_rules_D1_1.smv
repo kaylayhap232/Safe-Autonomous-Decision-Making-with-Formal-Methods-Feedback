@@ -1,0 +1,57 @@
+MODULE main
+VAR
+  pedestrian_in_path : boolean;
+  obstacle_in_path : boolean;
+  car_from_left : boolean;
+  car_from_right : boolean;
+  opposite_car : boolean;
+  stop_required : boolean;
+  permission_known : boolean;
+  movement_permitted : boolean;
+  sensor_data_available : boolean;
+  sensor_conflict : boolean;
+  maneuver : {go_straight, turn_left, turn_right};
+  action : {proceed, stop, request_info};
+ASSIGN
+  init(pedestrian_in_path) := TRUE;
+  next(pedestrian_in_path) := pedestrian_in_path;
+  init(obstacle_in_path) := FALSE;
+  next(obstacle_in_path) := obstacle_in_path;
+  init(car_from_left) := FALSE;
+  next(car_from_left) := car_from_left;
+  init(car_from_right) := FALSE;
+  next(car_from_right) := car_from_right;
+  init(opposite_car) := FALSE;
+  next(opposite_car) := opposite_car;
+  init(stop_required) := FALSE;
+  next(stop_required) := stop_required;
+  init(permission_known) := TRUE;
+  next(permission_known) := permission_known;
+  init(movement_permitted) := TRUE;
+  next(movement_permitted) := movement_permitted;
+  init(sensor_data_available) := TRUE;
+  next(sensor_data_available) := sensor_data_available;
+  init(sensor_conflict) := FALSE;
+  next(sensor_conflict) := sensor_conflict;
+  init(maneuver) := turn_right;
+  next(maneuver) := maneuver;
+  init(action) := request_info;
+  next(action) := action;
+DEFINE
+  traffic_conflict := car_from_left |
+    ((maneuver = go_straight | maneuver = turn_left) & car_from_right) |
+    (maneuver = turn_left & opposite_car);
+  blocked := pedestrian_in_path | obstacle_in_path | traffic_conflict |
+    stop_required | (permission_known & !movement_permitted);
+  uncertain := !permission_known | !sensor_data_available | sensor_conflict;
+LTLSPEC NAME pedestrian_no_proceed := G (pedestrian_in_path -> action != proceed);
+LTLSPEC NAME obstacle_no_proceed := G (obstacle_in_path -> action != proceed);
+LTLSPEC NAME traffic_no_proceed := G (traffic_conflict -> action != proceed);
+LTLSPEC NAME required_stop := G (stop_required -> action != proceed);
+LTLSPEC NAME permission_required := G ((permission_known & !movement_permitted) -> action != proceed);
+LTLSPEC NAME unknown_permission := G (!permission_known -> action != proceed);
+LTLSPEC NAME sensor_coverage := G (!sensor_data_available -> action != proceed);
+LTLSPEC NAME conflicting_sensors := G (sensor_conflict -> action != proceed);
+LTLSPEC NAME blocked_stop := G (blocked -> action = stop);
+LTLSPEC NAME uncertainty_request := G ((!blocked & uncertain) -> action = request_info);
+LTLSPEC NAME clear_proceed := G ((!blocked & !uncertain) -> action = proceed);

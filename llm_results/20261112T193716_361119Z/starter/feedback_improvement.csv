@@ -1,0 +1,3 @@
+model,feedback_examples,accuracy_change_pp,unsafe_reduction_pp,uncertainty_change_pp,safe_proceed_change_pp
+granite,1,0.0,-33.33333333333333,0.0,0.0
+llama,1,-66.66666666666667,0.0,-100.0,-100.0

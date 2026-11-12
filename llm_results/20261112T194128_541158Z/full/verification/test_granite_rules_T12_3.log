@@ -1,0 +1,53 @@
+*** This is NuSMV 2.7.1 (compiled on Mon Sep 29 16:07:59 2025)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2025, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver. 
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+
+##########################################################
+The transition relation is total: No deadlock state exists
+##########################################################
+-- specification  G (pedestrian_in_path -> action != proceed)  is true
+-- specification  G (obstacle_in_path -> action != proceed)  is true
+-- specification  G (traffic_conflict -> action != proceed)  is true
+-- specification  G (stop_required -> action != proceed)  is true
+-- specification  G ((permission_known & !movement_permitted) -> action != proceed)  is true
+-- specification  G (!permission_known -> action != proceed)  is true
+-- specification  G (!sensor_data_available -> action != proceed)  is true
+-- specification  G (sensor_conflict -> action != proceed)  is true
+-- specification  G (blocked -> action = stop)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -- Loop starts here
+  -> State: 1.1 <-
+    pedestrian_in_path = FALSE
+    obstacle_in_path = FALSE
+    car_from_left = FALSE
+    car_from_right = FALSE
+    opposite_car = FALSE
+    stop_required = TRUE
+    permission_known = TRUE
+    movement_permitted = TRUE
+    sensor_data_available = TRUE
+    sensor_conflict = FALSE
+    maneuver = turn_right
+    action = request_info
+    uncertain = FALSE
+    blocked = TRUE
+    traffic_conflict = FALSE
+  -> State: 1.2 <-
+-- specification  G ((!blocked & uncertain) -> action = request_info)  is true
+-- specification  G ((!blocked & !uncertain) -> action = proceed)  is true
+

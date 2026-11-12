@@ -1,0 +1,8 @@
+{
+  "granite": [
+    "Earlier scenario: At a green light, the vehicle plans to turn right, but a pedestrian is crossing its intended path.\nObserved facts: {\"pedestrian_in_path\": true, \"obstacle_in_path\": false, \"car_from_left\": false, \"car_from_right\": false, \"opposite_car\": false, \"stop_required\": false, \"permission_known\": true, \"movement_permitted\": true, \"sensor_data_available\": true, \"sensor_conflict\": false, \"maneuver\": \"turn_right\"}\nYour decision: REQUEST_INFO\nVerified correction: STOP\nFeedback: A confirmed hazard or mandatory stop takes priority over uncertainty."
+  ],
+  "llama": [
+    "Earlier scenario: The light is green for straight travel, but a parked truck blocks required cross-traffic sensor coverage. No hazard is confirmed.\nObserved facts: {\"pedestrian_in_path\": false, \"obstacle_in_path\": false, \"car_from_left\": false, \"car_from_right\": false, \"opposite_car\": false, \"stop_required\": false, \"permission_known\": true, \"movement_permitted\": true, \"sensor_data_available\": false, \"sensor_conflict\": false, \"maneuver\": \"go_straight\"}\nYour decision: STOP\nVerified correction: REQUEST_INFO\nFeedback: Remain stopped and request information when safety or permission is uncertain."
+  ]
+}

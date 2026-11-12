@@ -59,7 +59,7 @@ The model holds the observations and proposed action fixed. It checks that decis
 
 ## Read the results
 
-Each run creates a timestamped folder under `llm_results/`. Run files stay local and are not included in Git.
+Each run creates a timestamped folder under `llm_results/`. The completed starter and full runs from November 12, 2026 are included here. New runs stay local unless added explicitly.
 
 - `summary.csv`: metrics for each model and condition.
 - `feedback_improvement.csv`: feedback compared with rules alone.
