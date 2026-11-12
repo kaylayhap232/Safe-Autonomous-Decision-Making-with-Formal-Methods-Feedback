@@ -5,3 +5,6 @@ __pycache__/
 .env
 .env.*
 *.zip
+
+# Generated experiment runs
+llm_results/

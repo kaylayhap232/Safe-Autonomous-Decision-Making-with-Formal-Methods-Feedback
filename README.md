@@ -1,3 +1,89 @@
+# Driving decisions with formal feedback
+
+This project compares Granite 3.1 MoE 3B and LLaMA 3.2 3B on driving scenarios. Both models run locally through Ollama. NuSMV checks their proposed actions, and mistakes from the development cases become examples in later prompts.
+
+The question is whether those examples help each model make better decisions on new scenarios. Feedback changes the prompt, not the model weights.
+
+## Run the comparison
+
+Install Python 3.10 or newer and [Ollama](https://ollama.com/). Keep Ollama running, then open PowerShell in this folder. Download the two models once:
+
+```powershell
+ollama pull granite3.1-moe:3b
+ollama pull llama3.2:3b
+```
+
+Check the setup without calling either model:
+
+```powershell
+python compare_llms.py --check-only
+```
+
+Start with the six-scenario pilot:
+
+```powershell
+python compare_llms.py --run --stage starter
+```
+
+Run the full experiment:
+
+```powershell
+python compare_llms.py --run --stage full
+```
+
+The script uses Python's standard library, so Jupyter and the notebook requirements are not needed for this experiment. No API key or paid API is used. Model downloads need internet; the experiment runs on your computer. Runtime depends on your hardware.
+
+On Windows, keep the bundled `NuSMV/` folder beside the script. On Mac or Linux, install NuSMV and pass `--nusmv /path/to/NuSMV`. Those platforms have not been tested here.
+
+## What gets tested
+
+Each scenario starts with a stopped vehicle planning to go straight, turn left, or turn right. The model chooses `PROCEED`, `STOP`, or `REQUEST_INFO`. Cases include pedestrians, blocked paths, conflicting traffic, traffic-control permission, and missing or contradictory sensor data.
+
+The full experiment has 15 development cases and 35 held-out test cases. Each test case runs three times under each condition:
+
+- **Baseline:** the scenario and response instructions.
+- **Rules:** the same information plus the driving rules.
+- **Feedback:** the rules plus that model's corrected development mistakes.
+
+Feedback is collected separately for each model and frozen before testing. Test answers never become feedback. The six-case pilot uses cases from the development pool, leaving the full test set out of the pilot.
+
+There are 105 test decisions per model and condition, or 660 model calls including development. Use `--trials 1` for a shorter full run. The default `--stage both` runs the pilot and full experiment in sequence with fresh feedback for each stage.
+
+These scenarios were written for this project. Different descriptions can share the same encoded state, so held-out descriptions do not necessarily mean new state combinations.
+
+## Formal verification
+
+For each valid proposed action, the script checks a NuSMV model against 11 LTL properties: eight safety checks and three action-selection checks. Identical state/action checks reuse the checker result. Invalid model responses are recorded as invalid, not treated as verified decisions.
+
+The model holds the observations and proposed action fixed. It checks that decision against the encoded rules; it does not simulate a complete journey or prove that a real vehicle is safe. Staying stopped can satisfy the safety checks while still being the wrong action for a clear road.
+
+## Read the results
+
+Each run creates a timestamped folder under `llm_results/`. Run files stay local and are not included in Git.
+
+- `summary.csv`: metrics for each model and condition.
+- `feedback_improvement.csv`: feedback compared with rules alone.
+- `model_comparison.csv`: Granite minus LLaMA for each condition.
+- `test_results.csv`: individual test decisions and reference answers.
+- `feedback.json`: the development corrections given to each model.
+- `decisions.jsonl` and `responses.jsonl`: prompts, responses, and verification records.
+- `verification/`: generated `.smv` files and NuSMV logs, including counterexamples.
+- `config.json`, `scenarios.csv`, and `test_order.json`: the settings, cases, and evaluation order.
+
+Rates are decimals: `0.70` means 70%. Accuracy measures the expected action. Unsafe rate counts proceeding when the reference policy requires stopping or more information. Safe-proceed rate measures how often the model proceeds when it should. Uncertainty recognition measures correct requests for information. Invalid rate counts unusable responses.
+
+Formal-pass rate requires all 11 properties to pass. Safety compliance covers the eight safety properties; invalid responses count as failures. Consistency measures how often a scenario receives the same valid action across its repetitions. Compare all these measures: a model that never moves can avoid unsafe movement while making poor decisions.
+
+## Troubleshooting
+
+If Ollama cannot be reached, open the Ollama app and run `ollama list`. The default models must appear as `granite3.1-moe:3b` and `llama3.2:3b`. If NuSMV cannot be found, check that `NuSMV/bin/NuSMV.exe` is beside the script's folder structure, or pass its executable path with `--nusmv`.
+
+## Original paper baseline
+
+The notebooks below are the earlier Appendix D baseline. The driving comparison is a separate project extension, not a reproduction of the paper's training experiment. The original notebook instructions are preserved below.
+
+---
+
 # Paper baseline
 
 A small runnable test of the NuSMV controller examples in Appendix D of Yang et al., *Fine-Tuning Language Models Using Formal Methods Feedback*.
